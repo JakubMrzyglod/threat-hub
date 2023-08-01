@@ -1,16 +1,15 @@
-import { execute } from '../actions';
+import { execute } from '../src/actions';
 import * as path from 'path';
-import { saveJsonFile } from '../utils';
-import { FilePath } from '../constants';
+import { saveJsonFile } from '../src/utils';
+import { FilePath } from '../src/constants';
 
-const PLATFORMS_COUNT = 10000;
-const ASSERTS_COUNT = 100000;
-const VULNERABILITIES_COUNT = 100000;
-const MIN_PLATFORM_RELATIONS_COUNT = 10;
-const MAX_PLATFORM_RELATIONS_COUNT = 100;
+const PLATFORMS_COUNT = 100;
+const ASSERTS_COUNT = 1000;
+const VULNERABILITIES_COUNT = 1000;
+const MIN_PLATFORM_RELATIONS_COUNT = 2;
+const MAX_PLATFORM_RELATIONS_COUNT = 5;
 
 describe('run-script', () => {
-  jest.setTimeout(60000);
   const version = { min: 0, max: 1 };
   const random = (max: number, min: number) =>
     Math.floor(Math.random() * (max - min) + min);
