@@ -1,4 +1,4 @@
-import { assetsValidationSchema } from '../../../validation-scheams';
+import { assetsValidationSchema } from '../../../validation-schemas';
 import { readJsonFile } from '../read-json-file.util';
 import { ValidationError } from 'yup';
 describe(`readJsonFile`, () => {

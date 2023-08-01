@@ -6,3 +6,7 @@ export const vulnerabilityValidationSchema = object({
   name: string().required(),
   platforms: array().of(platformRelationValidationsSchema),
 });
+
+export const vulnerabilitiesValidationSchema = array().of(
+  vulnerabilityValidationSchema
+);
