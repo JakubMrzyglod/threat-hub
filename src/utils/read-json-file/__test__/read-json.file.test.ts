@@ -1,5 +1,5 @@
 import { readJsonFile } from '../read-json-file.util';
-import { ValidationError } from 'yup';
+
 describe(`readJsonFile`, () => {
   it('should read correctly', async () => {
     const filePath = './example.json';
