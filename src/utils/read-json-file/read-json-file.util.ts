@@ -13,7 +13,7 @@ export const readJsonFile = async <R>(
 
 const readFile = async (dirPath: string, filePath: string): Promise<string> => {
   try {
-    const fullFilePath = path.resolve(dirPath, filePath);
+    const fullFilePath = path.resolve(dirPath, `${filePath}.json`);
     const jsonData = await fs.readFile(fullFilePath, { encoding: 'utf8' });
 
     return jsonData;
