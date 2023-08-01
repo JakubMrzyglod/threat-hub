@@ -2,17 +2,12 @@ import {
   assetsValidationSchema,
   platformsValidationsSchema,
   vulnerabilitiesValidationSchema,
-} from '../validation-schemas';
+} from '../../validation-schemas';
 import * as path from 'path';
-import { readJsonFile, validate } from '../utils';
+import { readJsonFile, validate } from '../../utils';
 import { AnyObject, Schema } from 'yup';
-import { Assert, Platform, SortedItem, Vulnerability } from '../types';
-
-enum FilePath {
-  ASSERTS = './asserts',
-  VULNERABILITIES = './vulnerabilities',
-  PLATFORMS = './platforms',
-}
+import { Assert, Platform, SortedItem, Vulnerability } from '../../types';
+import { FilePath } from '../../constants';
 
 const INPUT_FILES_DIR_PATH = path.join(__dirname, 'inputs');
 
@@ -62,7 +57,7 @@ export const getData = async () => {
     platformsValidationsSchema
   );
   const getValidVulnerabilitiesPromise = getValidData<Vulnerability[]>(
-    FilePath.PLATFORMS,
+    FilePath.VULNERABILITIES,
     vulnerabilitiesValidationSchema
   );
 

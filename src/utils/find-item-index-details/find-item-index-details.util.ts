@@ -1,4 +1,4 @@
-import { SortedItem } from '../types';
+import { SortedItem } from '../../types';
 
 export const findItemIndexDetails = (
   items: SortedItem,

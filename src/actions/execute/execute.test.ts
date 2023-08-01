@@ -1,11 +1,11 @@
 describe(`execute`, () => {
   const saveJsonFileMockFn = jest.fn();
-  jest.mock('../../../utils/save-json-file', () => ({
+  jest.mock('../../utils/save-json-file', () => ({
     saveJsonFile: saveJsonFileMockFn,
   }));
 
-  it('should prepare correctly result - case 2', async () => {
-    jest.mock('../../get-data', () => ({
+  it('should prepare correctly result', async () => {
+    jest.mock('../get-data', () => ({
       getData: () => {
         const sortedAsserts = [
           [1, [1, 2]],

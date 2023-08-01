@@ -1,4 +1,4 @@
-import { saveJsonFile } from '../save-json-file.util';
+import { saveJsonFile } from './save-json-file.util';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
