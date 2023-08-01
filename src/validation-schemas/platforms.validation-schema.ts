@@ -1,8 +1,10 @@
-import { object, string, array } from 'yup';
+import { object, string, array, number } from 'yup';
 
 const platformValidationSchema = object({
-  id: string().required(),
+  id: number().required(),
   name: string().required(),
 });
 
-export const platformsValidationsSchema = array().of(platformValidationSchema);
+export const platformsValidationsSchema = array()
+  .of(platformValidationSchema)
+  .required();

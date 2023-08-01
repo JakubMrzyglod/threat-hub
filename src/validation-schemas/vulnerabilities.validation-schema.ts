@@ -1,12 +1,12 @@
-import { object, string, array } from 'yup';
+import { object, string, array, number } from 'yup';
 import { platformRelationValidationsSchema } from './platform-relation.validation-schema';
 
 export const vulnerabilityValidationSchema = object({
-  id: string().required(),
+  id: number().required(),
   name: string().required(),
-  platforms: array().of(platformRelationValidationsSchema),
+  platforms: array().of(platformRelationValidationsSchema).required(),
 });
 
-export const vulnerabilitiesValidationSchema = array().of(
-  vulnerabilityValidationSchema
-);
+export const vulnerabilitiesValidationSchema = array()
+  .of(vulnerabilityValidationSchema)
+  .required();

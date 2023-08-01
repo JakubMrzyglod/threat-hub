@@ -1,10 +1,12 @@
-import { object, string, array } from 'yup';
+import { object, number, array, string } from 'yup';
 import { platformRelationValidationsSchema } from './platform-relation.validation-schema';
 
 const assetValidationSchema = object({
-  id: string().required(),
+  id: number().required(),
   name: string().required(),
-  platforms: array().of(platformRelationValidationsSchema),
+  platforms: array().of(platformRelationValidationsSchema).required(),
 });
 
-export const assetsValidationSchema = array().of(assetValidationSchema);
+export const assetsValidationSchema = array()
+  .of(assetValidationSchema)
+  .required();
