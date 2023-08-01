@@ -2,7 +2,7 @@ import * as path from 'path';
 import { getData } from '../get-data';
 import { findItemIndexDetails, mixIds, saveJsonFile } from '../../utils';
 
-const OUTPUT_FILES_DIR_PATH = path.join(__dirname, 'outputs');
+const OUTPUT_FILES_DIR_PATH = path.join(__dirname, '../../outputs');
 const OUTPUT_FILE_NAME = 'result';
 
 export const execute = async () => {

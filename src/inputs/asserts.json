@@ -1,7 +1,0 @@
-[
-  {
-    "id": 1,
-    "name": "assert 1 name",
-    "platforms": [{ "id": 1, "version": { "min": 0, "max": 1 } }]
-  }
-]
