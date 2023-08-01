@@ -1,12 +1,15 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { AnyObject, Schema } from 'yup';
 
-export const readJsonFile = async <R extends Record<string, any>>(
+export const readJsonFile = async <R>(
   dirPath: string,
-  filePath: string
+  filePath: string,
+  validationSchema?: Schema<R, AnyObject>
 ): Promise<R> => {
   const json = await readFile(dirPath, filePath);
   const data = parseJson<R>(json);
+  await validData(data, validationSchema);
 
   return data;
 };
@@ -32,4 +35,15 @@ const parseJson = <R>(jsonData: string): R => {
       `Could not parse file data for: ${jsonData || '<empty-file>'}`
     );
   }
+};
+
+const validData = async <R>(
+  data: R,
+  validationSchema?: Schema<R, AnyObject>
+) => {
+  if (!validationSchema) {
+    return;
+  }
+
+  await validationSchema.validate(data);
 };

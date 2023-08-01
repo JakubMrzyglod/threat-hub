@@ -1,5 +1,6 @@
+import { assetsValidationSchema } from '../../../validation-scheams';
 import { readJsonFile } from '../read-json-file.util';
-
+import { ValidationError } from 'yup';
 describe(`readJsonFile`, () => {
   it('should read correctly', async () => {
     const filePath = './example.json';
@@ -7,6 +8,20 @@ describe(`readJsonFile`, () => {
     const originalJsonData = require('./example.json');
 
     await expect(readPromise).resolves.toEqual(originalJsonData);
+  });
+
+  it('should throw error for invalid validation', async () => {
+    const filePath = './example.json';
+    const readPromise = readJsonFile(
+      __dirname,
+      filePath,
+      assetsValidationSchema
+    );
+    const originalJsonData = require('./example.json');
+
+    await expect(readPromise).rejects.toEqual(
+      new ValidationError('[0].name is a required field')
+    );
   });
 
   it('should throw error for empty file', async () => {
