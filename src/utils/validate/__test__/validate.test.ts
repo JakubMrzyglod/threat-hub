@@ -8,11 +8,11 @@ describe(`readJsonFile`, () => {
     const readPromise = validate(data, assetsValidationSchema);
 
     await expect(readPromise).rejects.toEqual(
-      new ValidationError('[0].name is a required field')
+      new ValidationError('[0].platforms is a required field')
     );
   });
 
-  it('should valid and return void', async () => {
+  it('should successfully valid and return void', async () => {
     const data = [
       {
         id: 1,
