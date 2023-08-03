@@ -23,6 +23,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "rxjs": "^7.8.1",
     "yup": "^1.2.0"
   }
 }

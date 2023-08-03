@@ -1,25 +1,24 @@
 import * as path from 'path';
 import { getData } from '../get-data';
-import {
-  addItemToFile,
-  findItemIndexDetails,
-  finishFile,
-  mixIds,
-  startFile,
-} from '../../utils';
+import { findItemIndexDetails, mixIds } from '../../utils';
+import { SaveFileBus } from '../../helpers';
 
 const OUTPUT_FILES_DIR_PATH = path.join(__dirname, '../../../outputs');
 const OUTPUT_FILE_NAME = 'result';
 
 export const execute = async () => {
+  console.time();
+  console.log('pre data fetching');
   const { sortedAsserts, sortedPlatforms, sortedVulnerabilities } =
     await getData();
+  console.log('post data fetching');
 
   let currentAssertIndex = 0;
   let currentVulnerabilityIndex = 0;
-  let isFirstAppend = true;
 
-  const filePath = await startFile(OUTPUT_FILES_DIR_PATH, OUTPUT_FILE_NAME);
+  const saveFileBus = new SaveFileBus(OUTPUT_FILES_DIR_PATH, OUTPUT_FILE_NAME);
+  console.log('start');
+  await saveFileBus.init();
 
   for (
     let platformIndex = 0;
@@ -64,14 +63,13 @@ export const execute = async () => {
       platformDetails
     );
 
-    const addToFilePromises = currentPlatformPairs.map((pair) => {
-      const promise = addItemToFile(filePath, pair, isFirstAppend);
-      isFirstAppend = false;
-      return promise;
-    });
-
-    await Promise.all(addToFilePromises);
+    saveFileBus.addAppendEvent(currentPlatformPairs);
   }
 
-  await finishFile(filePath);
+  console.log('finished');
+
+  await saveFileBus.end();
+
+  console.log('end');
+  console.timeEnd();
 };
