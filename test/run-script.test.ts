@@ -3,9 +3,9 @@ import * as path from 'path';
 import { saveJsonFile } from '../src/utils';
 import { FilePath } from '../src/constants';
 
-const PLATFORMS_COUNT = 1000;
-const ASSERTS_COUNT = 10000;
-const VULNERABILITIES_COUNT = 10000;
+const PLATFORMS_COUNT = 10000;
+const ASSERTS_COUNT = 1000000;
+const VULNERABILITIES_COUNT = 1000000;
 const MIN_PLATFORM_RELATIONS_COUNT = 2;
 const MAX_PLATFORM_RELATIONS_COUNT = 5;
 

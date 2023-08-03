@@ -6,20 +6,27 @@ export class SaveFileBus<T extends Record<string, any>> {
   private isFirstItem: boolean = true;
   private filePath: string;
   private appendsSubject: ReplaySubject<T[]>;
-  private appends$: Observable<void>;
+  private appends$: Observable<Promise<void>>;
+  private parsedString = '';
+  private maxParsedStringLength = Math.pow(2, 27);
 
   constructor(private dirPath: string, fileName: string) {
     this.filePath = path.join(dirPath, `${fileName}.json`);
     this.appendsSubject = new ReplaySubject<T[]>();
     this.appends$ = this.appendsSubject.asObservable().pipe(
-      mergeMap(async (items, i) => {
+      map(async (items, i) => {
         for (let i = 0; i < items.length; i++) {
           const addCommaBefore = !this.isFirstItem;
           this.isFirstItem = false;
           const jsonData = `${addCommaBefore ? ',' : ''}${JSON.stringify(
             items[i]
           )}`;
-          await fs.appendFile(this.filePath, jsonData);
+          this.parsedString += jsonData;
+          if (this.parsedString.length >= this.maxParsedStringLength) {
+            const tempParsedString = this.parsedString;
+            this.parsedString = '';
+            await fs.appendFile(this.filePath, tempParsedString);
+          }
         }
       })
     );
@@ -39,7 +46,7 @@ export class SaveFileBus<T extends Record<string, any>> {
     console.log('end');
     this.appendsSubject.complete();
     await lastValueFrom(this.appends$, { defaultValue: true });
-    await fs.appendFile(this.filePath, ']');
+    await fs.appendFile(this.filePath, `${this.parsedString}]`);
   }
 
   private async dropFile() {
