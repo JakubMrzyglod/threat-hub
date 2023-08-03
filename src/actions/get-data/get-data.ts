@@ -9,7 +9,7 @@ import { AnyObject, Schema } from 'yup';
 import { Assert, Platform, SortedItem, Vulnerability } from '../../types';
 import { FilePath } from '../../constants';
 
-const INPUT_FILES_DIR_PATH = path.join(__dirname, '../../inputs');
+const INPUT_FILES_DIR_PATH = path.join(__dirname, '../../../inputs');
 
 const getValidData = async <T>(
   filePath: FilePath,

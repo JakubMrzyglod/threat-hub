@@ -1,8 +1,14 @@
 import * as path from 'path';
 import { getData } from '../get-data';
-import { findItemIndexDetails, mixIds, saveJsonFile } from '../../utils';
+import {
+  addItemToFile,
+  findItemIndexDetails,
+  finishFile,
+  mixIds,
+  startFile,
+} from '../../utils';
 
-const OUTPUT_FILES_DIR_PATH = path.join(__dirname, '../../outputs');
+const OUTPUT_FILES_DIR_PATH = path.join(__dirname, '../../../outputs');
 const OUTPUT_FILE_NAME = 'result';
 
 export const execute = async () => {
@@ -11,7 +17,9 @@ export const execute = async () => {
 
   let currentAssertIndex = 0;
   let currentVulnerabilityIndex = 0;
-  const platformPairs = [];
+  let isFirstAppend = true;
+
+  const filePath = await startFile(OUTPUT_FILES_DIR_PATH, OUTPUT_FILE_NAME);
 
   for (
     let platformIndex = 0;
@@ -56,8 +64,14 @@ export const execute = async () => {
       platformDetails
     );
 
-    platformPairs.push(...currentPlatformPairs);
+    const addToFilePromises = currentPlatformPairs.map((pair) => {
+      const promise = addItemToFile(filePath, pair, isFirstAppend);
+      isFirstAppend = false;
+      return promise;
+    });
+
+    await Promise.all(addToFilePromises);
   }
 
-  await saveJsonFile(OUTPUT_FILES_DIR_PATH, OUTPUT_FILE_NAME, platformPairs);
+  await finishFile(filePath);
 };

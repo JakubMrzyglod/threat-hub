@@ -3,7 +3,8 @@
   "version": "1.0.0-alpha",
   "scripts": {
     "test": "jest",
-    "build": "tsc --build ./tsconfig.build.json"
+    "build": "tsc --build ./tsconfig.build.json",
+    "start": "node --max-old-space-size=16384 dist/index.js"
   },
   "repository": {
     "type": "git",
