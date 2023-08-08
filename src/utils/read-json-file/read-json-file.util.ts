@@ -5,11 +5,8 @@ export const readJsonFile = async <R>(
   dirPath: string,
   filePath: string
 ): Promise<R> => {
-  console.log({ filePath }, 'preread');
   const json = await readFile(dirPath, filePath);
-  console.log({ filePath }, 'preparse');
   const data = parseJson<R>(json);
-  console.log({ filePath }, 'postparse');
 
   return data;
 };

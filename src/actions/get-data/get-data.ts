@@ -11,7 +11,7 @@ import { FilePath } from '../../constants';
 
 const INPUT_FILES_DIR_PATH = path.join(__dirname, '../../../inputs');
 
-const prepareValidateData = <T extends Assert | Vulnerability>(
+export const prepareValidateData = <T extends Assert | Vulnerability>(
   data: T[],
   requiredFields: (keyof T)[]
 ): SortedItems => {
@@ -34,17 +34,20 @@ const prepareValidateData = <T extends Assert | Vulnerability>(
   return result;
 };
 
-const checkRequiredFields = <T>(item: T, requiredFields: (keyof T)[]) => {
+export const checkRequiredFields = <T>(
+  item: T,
+  requiredFields: (keyof T)[]
+) => {
   requiredFields.forEach((fieldName) => {
     const itemValue = item[fieldName];
     const itemValueIsNullable = [undefined, null].includes(itemValue as any);
     if (itemValueIsNullable) {
-      throw new Error(`Missing value for ${fieldName as String}`);
+      throw new Error(`Missing value for ['${fieldName as String}']`);
     }
   });
 };
 
-const sortPlatforms = (
+export const sortPlatforms = (
   platforms: Platform[],
   requiredFields: (keyof Platform)[]
 ): SortedPlatformDetails => {

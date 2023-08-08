@@ -32,16 +32,13 @@ export class SaveFileBus<T extends Record<string, any>> {
   }
 
   async end() {
-    console.log('end');
     await fs.appendFile(this.filePath, `${this.parsedString}]`);
   }
 
   private async dropFile() {
     try {
       await fs.rm(this.filePath, { recursive: true, force: true });
-    } catch (e) {
-      console.log({ e });
-    }
+    } catch (e) {}
   }
 
   private async createDirIfNotExists() {
