@@ -36,7 +36,7 @@ describe('Your Module', () => {
 
       const result = prepareValidateData<Assert>(data, requiredFields);
 
-      expect(result).toEqual([, [1], [2]]);
+      expect(result).toEqual({ data: [, [1], [2]], lastPlatformId: 2 });
     });
   });
 
@@ -77,9 +77,9 @@ describe('Your Module', () => {
 
       const result = await getData();
       expect(result).toEqual({
-        sortedAsserts: [, [1]],
+        sortedAsserts: { data: [, [1]], lastPlatformId: 1 },
         sortedPlatforms: [{ name: 'Platform' }],
-        sortedVulnerabilities: [, [1]],
+        sortedVulnerabilities: { data: [, [1]], lastPlatformId: 1 },
       });
     });
   });

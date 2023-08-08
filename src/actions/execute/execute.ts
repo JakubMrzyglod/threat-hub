@@ -16,9 +16,18 @@ export const execute = async () => {
   await saveFileBus.init();
 
   for (let platformId = 0; platformId < sortedPlatforms.length; platformId++) {
+    const noMoreAsserts = platformId > sortedAsserts.lastPlatformId;
+    const noMoreVulnerabilities =
+      platformId > sortedVulnerabilities.lastPlatformId;
+
+    if (noMoreAsserts || noMoreVulnerabilities) {
+      break;
+    }
+
     const platformDetails = sortedPlatforms[platformId];
-    const platformAssertIds = sortedAsserts[platformId];
-    const platformVulnerabilityAssertIds = sortedVulnerabilities[platformId];
+    const platformAssertIds = sortedAsserts.data[platformId];
+    const platformVulnerabilityAssertIds =
+      sortedVulnerabilities.data[platformId];
 
     if (
       !platformAssertIds ||

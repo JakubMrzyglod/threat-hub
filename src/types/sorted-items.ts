@@ -1,2 +1,2 @@
-export type SortedItems = number[][];
+export type SortedItems = { data: number[][]; lastPlatformId: number };
 export type SortedPlatformDetails = { name: string }[];

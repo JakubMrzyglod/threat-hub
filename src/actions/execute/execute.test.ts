@@ -11,14 +11,17 @@ describe(`execute`, () => {
   it('should prepare correctly result', async () => {
     jest.mock('../get-data', () => ({
       getData: () => {
-        const sortedAsserts = [[1, 2], [3], [2]];
+        const sortedAsserts = { data: [[1, 2], [3], [2]], lastPlatformId: 2 };
         const sortedPlatforms = [
           { name: 'platform 1' },
           { name: 'platform 2' },
           ,
           { name: 'platform 4' },
         ];
-        const sortedVulnerabilities = [[1], [2], [3]];
+        const sortedVulnerabilities = {
+          data: [[1], [2], [3]],
+          lastPlatformId: 2,
+        };
         return { sortedAsserts, sortedPlatforms, sortedVulnerabilities };
       },
     }));
