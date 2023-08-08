@@ -15,7 +15,8 @@ export const prepareValidateData = <T extends Assert | Vulnerability>(
   data: T[],
   requiredFields: (keyof T)[]
 ): SortedItems => {
-  const result: SortedItems = [];
+  const result: number[][] = [];
+  let lastPlatformId = 0;
   for (let dataIndex = 0; dataIndex < data.length; dataIndex++) {
     const item = data[dataIndex];
     checkRequiredFields(item, requiredFields);
@@ -26,12 +27,15 @@ export const prepareValidateData = <T extends Assert | Vulnerability>(
       platformIndex++
     ) {
       const platform = platforms[platformIndex];
+      if (platform.id > lastPlatformId) {
+        lastPlatformId = platform.id;
+      }
       result[platform.id] ??= [];
       result[platform.id].push(item.id);
     }
   }
 
-  return result;
+  return { data: result, lastPlatformId };
 };
 
 export const checkRequiredFields = <T>(
