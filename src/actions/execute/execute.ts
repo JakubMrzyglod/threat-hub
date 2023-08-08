@@ -1,6 +1,6 @@
 import * as path from 'path';
 import { getData } from '../get-data';
-import { findItemIndexDetails, mixIds } from '../../utils';
+import { mixIds } from '../../utils';
 import { SaveFileBus } from '../../helpers';
 
 const OUTPUT_FILES_DIR_PATH = path.join(__dirname, '../../../outputs');
@@ -13,57 +13,26 @@ export const execute = async () => {
     await getData();
   console.log('post data fetching');
 
-  let currentAssertIndex = 0;
-  let currentVulnerabilityIndex = 0;
-
   const saveFileBus = new SaveFileBus(OUTPUT_FILES_DIR_PATH, OUTPUT_FILE_NAME);
   console.log('start');
   await saveFileBus.init();
 
-  for (
-    let platformIndex = 0;
-    platformIndex < sortedPlatforms.length;
-    platformIndex++
-  ) {
-    const currentPlatform = sortedPlatforms[platformIndex];
-    const assertIndexDetails = findItemIndexDetails(
-      sortedAsserts,
-      currentAssertIndex,
-      currentPlatform.id
-    );
+  for (let platformId = 0; platformId < sortedPlatforms.length; platformId++) {
+    const currentPlatformDetails = sortedPlatforms[platformId];
+    const platformAssertIds = sortedAsserts[platformId];
+    const platformVulnerabilityAssertIds = sortedVulnerabilities[platformId];
 
-    const vulnerabilityIndexDetails = findItemIndexDetails(
-      sortedVulnerabilities,
-      currentVulnerabilityIndex,
-      currentPlatform.id
-    );
-
-    if (!assertIndexDetails || !vulnerabilityIndexDetails) {
-      break;
-    }
-
-    currentAssertIndex = assertIndexDetails.index;
-    currentVulnerabilityIndex = vulnerabilityIndexDetails.index;
-
-    if (
-      !assertIndexDetails?.isMatched ||
-      !vulnerabilityIndexDetails?.isMatched
-    ) {
+    if (!platformAssertIds || !platformVulnerabilityAssertIds) {
       continue;
     }
 
-    const platformAssertIds = sortedAsserts[currentAssertIndex][1];
-    const platformVulnerabilityAssertIds =
-      sortedVulnerabilities[currentVulnerabilityIndex][1];
-
-    const platformDetails = { name: currentPlatform.name };
     const currentPlatformPairs = mixIds(
       platformAssertIds,
       platformVulnerabilityAssertIds,
-      platformDetails
+      currentPlatformDetails
     );
 
-    saveFileBus.addAppendEvent(currentPlatformPairs);
+    await saveFileBus.append(currentPlatformPairs);
   }
 
   console.log('finished');

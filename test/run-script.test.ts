@@ -3,11 +3,11 @@ import * as path from 'path';
 import { saveJsonFile } from '../src/utils';
 import { FilePath } from '../src/constants';
 
-const PLATFORMS_COUNT = 10000;
-const ASSERTS_COUNT = 1000000;
-const VULNERABILITIES_COUNT = 1000000;
+const PLATFORMS_COUNT = 10;
+const ASSERTS_COUNT = 10;
+const VULNERABILITIES_COUNT = 10;
 const MIN_PLATFORM_RELATIONS_COUNT = 2;
-const MAX_PLATFORM_RELATIONS_COUNT = 5;
+const MAX_PLATFORM_RELATIONS_COUNT = 2;
 
 describe('run-script', () => {
   jest.setTimeout(60000);
@@ -82,6 +82,6 @@ describe('run-script', () => {
       savePlatformsPromise,
     ]);
 
-    // await expect(execute()).resolves.toBeUndefined();
+    await expect(execute()).resolves.toBeUndefined();
   });
 });

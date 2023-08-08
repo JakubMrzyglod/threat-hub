@@ -1,29 +1,24 @@
-import {
-  assetsValidationSchema,
-  platformsValidationsSchema,
-  vulnerabilitiesValidationSchema,
-} from '../../validation-schemas';
 import * as path from 'path';
-import { readJsonFile, validate } from '../../utils';
-import { AnyObject, Schema } from 'yup';
-import { Assert, Platform, SortedItem, Vulnerability } from '../../types';
+import { readJsonFile } from '../../utils';
+import {
+  Assert,
+  Platform,
+  SortedItems,
+  SortedPlatformDetails,
+  Vulnerability,
+} from '../../types';
 import { FilePath } from '../../constants';
 
 const INPUT_FILES_DIR_PATH = path.join(__dirname, '../../../inputs');
 
-const getValidData = async <T>(
-  filePath: FilePath,
-  validationSchema: Schema<T, AnyObject>
-) => {
-  const data = await readJsonFile<T>(INPUT_FILES_DIR_PATH, filePath);
-  await validate(data, validationSchema);
-  return data;
-};
-
-const prepareData = (data: Assert[] | Vulnerability[]): SortedItem => {
-  const result: Record<number, number[]> = {};
+const prepareValidateData = <T extends Assert | Vulnerability>(
+  data: T[],
+  requiredFields: (keyof T)[]
+): SortedItems => {
+  const result: SortedItems = [];
   for (let dataIndex = 0; dataIndex < data.length; dataIndex++) {
     const item = data[dataIndex];
+    checkRequiredFields(item, requiredFields);
     const platforms = item.platforms;
     for (
       let platformIndex = 0;
@@ -36,29 +31,47 @@ const prepareData = (data: Assert[] | Vulnerability[]): SortedItem => {
     }
   }
 
-  const sortedResult = Object.entries(result).sort((a, b) => +a[0] - +b[0]);
-
-  return sortedResult;
+  return result;
 };
 
-const sortPlatforms = (platforms: Platform[]) => {
-  const sortedPlatforms = platforms.sort((a, b) => a.id - b.id);
+const checkRequiredFields = <T>(item: T, requiredFields: (keyof T)[]) => {
+  requiredFields.forEach((fieldName) => {
+    const itemValue = item[fieldName];
+    const itemValueIsNullable = [undefined, null].includes(itemValue as any);
+    if (itemValueIsNullable) {
+      throw new Error(`Missing value for ${fieldName as String}`);
+    }
+  });
+};
 
-  return sortedPlatforms;
+const sortPlatforms = (
+  platforms: Platform[],
+  requiredFields: (keyof Platform)[]
+): SortedPlatformDetails => {
+  const result: SortedPlatformDetails = [];
+  for (let platformId = 0; platformId < platforms.length; platformId++) {
+    const platformItem = platforms[platformId];
+    checkRequiredFields(platformItem, requiredFields);
+    result[platformId] = { name: platformItem.name };
+  }
+
+  return result;
 };
 
 export const getData = async () => {
-  const getValidAssertsPromise = getValidData<Assert[]>(
-    FilePath.ASSERTS,
-    assetsValidationSchema
+  const getValidAssertsPromise = readJsonFile<Assert[]>(
+    INPUT_FILES_DIR_PATH,
+    FilePath.ASSERTS
   );
-  const getValidPlatformsPromise = getValidData<Platform[]>(
-    FilePath.PLATFORMS,
-    platformsValidationsSchema
+
+  const getValidPlatformsPromise = readJsonFile<Platform[]>(
+    INPUT_FILES_DIR_PATH,
+    FilePath.PLATFORMS
   );
-  const getValidVulnerabilitiesPromise = getValidData<Vulnerability[]>(
-    FilePath.VULNERABILITIES,
-    vulnerabilitiesValidationSchema
+
+  const getValidVulnerabilitiesPromise = readJsonFile<Vulnerability[]>(
+    INPUT_FILES_DIR_PATH,
+    FilePath.VULNERABILITIES
   );
 
   const [asserts, vulnerabilities, platforms] = await Promise.all([
@@ -67,9 +80,12 @@ export const getData = async () => {
     getValidPlatformsPromise,
   ]);
 
-  const sortedAsserts = prepareData(asserts);
-  const sortedVulnerabilities = prepareData(vulnerabilities);
-  const sortedPlatforms = sortPlatforms(platforms);
+  const sortedAsserts = prepareValidateData(asserts, ['id', 'platforms']);
+  const sortedVulnerabilities = prepareValidateData(vulnerabilities, [
+    'id',
+    'platforms',
+  ]);
+  const sortedPlatforms = sortPlatforms(platforms, ['id', 'name']);
 
   return { sortedAsserts, sortedPlatforms, sortedVulnerabilities };
 };
